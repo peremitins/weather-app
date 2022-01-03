@@ -1,6 +1,6 @@
 <template>
-  <div @click="goToWeather" class="city">
-    <i v-if="edit" @click="removeCity" class="far fa-trash-alt edit" ref="edit"></i>
+  <div class="city">
+    <i class="far fa-trash-alt edit" ref="edit"></i>
     <span>{{ this.city.city }}</span>
     <div class="weather">
       <span>{{ Math.round(this.city.currentWeather.main.temp) }}&deg;</span>

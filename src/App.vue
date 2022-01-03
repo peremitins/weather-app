@@ -1,24 +1,28 @@
 <template>
   <div id="app" class="main">
-    <Navigation></Navigation>
+    <Modal v-if="modalOpen" @close-modal="toggleModal" :APIkey="APIkey" :cities="cities"></Modal>
+    <Navigation @add-city="toggleModal"></Navigation>
     <router-view :cities="cities"/>
   </div>
 </template>
 
 <script>
+import Modal from './components/Modal'
 import Navigation from './components/Navigation';
 import axios from 'axios';
 import db from './firebase/firebaseInit';
 import { doc, updateDoc, collection, getDocs } from 'firebase/firestore/lite';
 
 export default {
-  components: { Navigation },
+  components: {
+    Modal, Navigation },
   name: 'App',
   data() {
     return {
       APIkey: '152307cfee4000c6853a3faf8d9bc911',
       city: 'Detroit',
-      cities: []
+      cities: [],
+      modalOpen: null,
     }
   },
   created() {
@@ -30,6 +34,8 @@ export default {
       
       const citySnapshot = await getDocs(citiesCol);
       citySnapshot.docs.map(async city => {
+        console.log(city);
+        
         try {
           const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city.data().city}&appid=${this.APIkey}`);
           const getCityById = doc(db, "cities", city.id);
@@ -42,10 +48,8 @@ export default {
         }
       });
     },
-    async getApi() {
-      const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${this.APIkey}`);
-      console.log(response);
-      
+    toggleModal() {
+      this.modalOpen = !this.modalOpen;
     }
   }
 }

@@ -5,8 +5,8 @@
         <span class="header__logo">Add City</span>
         <div class="header__right">
           <i ref="editCities" class="far fa-edit"></i>
-          <i class="fas fa-sync"></i>
-          <i class="fas fa-plus"></i>
+          <i @click="reloadApp" class="fas fa-sync"></i>
+          <i @click="addCity" class="fas fa-plus"></i>
         </div>
       </nav>
     </header>
@@ -30,18 +30,18 @@
 export default {
   name: "Navigation",
   // props: ["addCityActive", "isDay", "isNight"],
-  // methods: {
-  //   addCity() {
-  //     this.$emit("add-city");
-  //   },
-  //   reloadApp() {
-  //     location.reload();
-  //   },
+  methods: {
+    addCity() {
+      this.$emit("add-city");
+    },
+    reloadApp() {
+      location.reload();
+    },
   //   editCities() {
   //     this.$refs.editCities.classList.toggle("edit-active");
   //     this.$emit("edit-city");
   //   },
-  // },
+  },
 };
 </script>
 

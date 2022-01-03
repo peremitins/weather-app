@@ -2,11 +2,11 @@
   <div>
     <div v-if="cities.length === 0" class="no-cities">
       <p>No cities added, add a new one?</p>
-      <button @click="addCity">Add City</button>
+      <button>Add City</button>
     </div>
     <div class="grid">
       <div class="city-link" v-for="(city, index) in cities" v-bind:key="index">
-        <City :city="city" :edit="edit" />
+        <City :city="city"/>
       </div>
     </div>
   </div>
