@@ -10,8 +10,8 @@
 
 <script>
 import axios from "axios";
+import {  collection, addDoc } from 'firebase/firestore';
 import db from '../firebase/firebaseInit';
-import { addDoc, collection } from 'firebase/firestore/lite';
 
 export default {
   name: "modal",
@@ -40,23 +40,6 @@ export default {
           currentWeather: response.data
         });
         this.$emit("close-modal");
-        // try {
-        //   const res = await axios.get(
-        //     `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=imperial&APPID=${this.APIkey}`
-        //   );
-        //   const data = await res.data;
-        //   db.collection("cities")
-        //     .doc()
-        //     .set({
-        //       city: this.city.toLowerCase(),
-        //       currentWeather: data,
-        //     })
-        //     .then(() => {
-        //       this.$emit("close-modal");
-        //     });
-        // } catch {
-        //   alert(`${this.city} does not exist, please try again!`);
-        // }
       }
     },
   },

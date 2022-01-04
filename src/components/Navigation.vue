@@ -4,7 +4,7 @@
       <nav>
         <span class="header__logo">Add City</span>
         <div class="header__right">
-          <i ref="editCities" class="far fa-edit"></i>
+          <i @click="editCities" ref="editCities" class="far fa-edit"></i>
           <i @click="reloadApp" class="fas fa-sync"></i>
           <i @click="addCity" class="fas fa-plus"></i>
         </div>
@@ -37,10 +37,10 @@ export default {
     reloadApp() {
       location.reload();
     },
-  //   editCities() {
-  //     this.$refs.editCities.classList.toggle("edit-active");
-  //     this.$emit("edit-city");
-  //   },
+    editCities() {
+      this.$refs.editCities.classList.toggle("edit-active");
+      this.$emit("edit-city");
+    },
   },
 };
 </script>

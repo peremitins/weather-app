@@ -5,8 +5,8 @@
       <button>Add City</button>
     </div>
     <div class="grid">
-      <div class="city-link" v-for="(city, index) in cities" v-bind:key="index">
-        <City :city="city"/>
+      <div class="city-link" v-for="(city, index) in cities" :key="index">
+        <City :city="city" :edit="edit"/>
       </div>
     </div>
   </div>
@@ -17,7 +17,7 @@ import City from "../components/City";
 
 export default {
   name: 'AddCity',
-  props: ['cities'],
+  props: ['cities', 'edit'],
   components: {
     City
   }

@@ -1,6 +1,6 @@
 <template>
-  <div class="city">
-    <i class="far fa-trash-alt edit" ref="edit"></i>
+  <div class="city" @click="goToCity">
+    <i v-if="edit" @click="removeCity" class="far fa-trash-alt edit" ref="edit"></i>
     <span>{{ this.city.city }}</span>
     <div class="weather">
       <span>{{ Math.round(this.city.currentWeather.main.temp) }}&deg;</span>
@@ -19,13 +19,34 @@
 </template>
 
 <script>
+import db from '../firebase/firebaseInit';
+import { collection, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
+
 export default {
   name: "City",
-  props: ["city"],
+  props: ["city", "edit"],
   data() {
     return {
+      id: null,
     };
   },
+  methods: {
+    async removeCity() {
+      const q = query(collection(db, "cities"), where("city", "==", `${this.city.city}`));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        this.id = doc.id;
+      });
+      await deleteDoc(doc(db, "cities", this.id));
+    },
+    goToCity(e) {
+      if (e.target === this.$refs.edit) {
+        //
+      } else {
+        this.$router.push({name: 'Weather', params: {city: this.city.city}})
+      }
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

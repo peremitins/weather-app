@@ -1,17 +1,17 @@
 <template>
   <div id="app" class="main">
     <Modal v-if="modalOpen" @close-modal="toggleModal" :APIkey="APIkey" :cities="cities"></Modal>
-    <Navigation @add-city="toggleModal"></Navigation>
-    <router-view :cities="cities"/>
+    <Navigation @add-city="toggleModal" @edit-city="toggleEdit"></Navigation>
+    <router-view :cities="cities" :edit="edit"/>
   </div>
 </template>
 
 <script>
+import db from './firebase/firebaseInit';
+import { doc, updateDoc, collection,  onSnapshot } from 'firebase/firestore';
 import Modal from './components/Modal'
 import Navigation from './components/Navigation';
 import axios from 'axios';
-import db from './firebase/firebaseInit';
-import { doc, updateDoc, collection, getDocs } from 'firebase/firestore/lite';
 
 export default {
   components: {
@@ -23,6 +23,7 @@ export default {
       city: 'Detroit',
       cities: [],
       modalOpen: null,
+      edit: null,
     }
   },
   created() {
@@ -32,24 +33,32 @@ export default {
     async getCityWeather() {
       const citiesCol = collection(db, 'cities');
       
-      const citySnapshot = await getDocs(citiesCol);
-      citySnapshot.docs.map(async city => {
-        console.log(city);
-        
-        try {
-          const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city.data().city}&appid=${this.APIkey}`);
-          const getCityById = doc(db, "cities", city.id);
-          await updateDoc(getCityById, {
-              currentWeather: response.data
-          })
-          this.cities.push(city.data());
-        } catch (err) {
-          console.log(err);
-        }
-      });
+        onSnapshot(citiesCol, (snapshot) => {
+          snapshot.docChanges().forEach(async (change) => {
+            if (change.type === "added" && !change.doc.Nd) {
+             try {
+                const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${change.doc.data().city}&appid=${this.APIkey}`);
+                const getCityById = doc(db, "cities", change.doc.id);
+                await updateDoc(getCityById, {
+                    currentWeather: response.data
+                })
+                this.cities.push(change.doc.data());
+              } catch (err) {
+                console.log(err);
+              }
+            } else if (change.type === "added" && change.doc.Nd) {
+              this.cities.push(change.doc.data())
+            } else if (change.type === "removed") {
+              this.cities = this.cities.filter(city => city.city !== change.doc.data().city)
+            }
+          });
+        });
     },
     toggleModal() {
       this.modalOpen = !this.modalOpen;
+    },
+    toggleEdit() {
+      this.edit = !this.edit;
     }
   }
 }
