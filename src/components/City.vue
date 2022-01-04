@@ -59,16 +59,18 @@ export default {
   min-height: 250px;
   color: #fff;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 
   .edit {
     border-radius: 0px 15px 0 0;
     border: 10px solid rgb(77, 77, 77);
     background-color: rgb(77, 77, 77);
-    z-index: 1;
+    z-index: 10;
     font-size: 20px;
     position: absolute;
     bottom: 0px;
     left: 0px;
+    cursor: pointer;
   }
 
   span {

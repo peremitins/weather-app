@@ -1,26 +1,34 @@
 <template>
   <div id="app" class="main">
-    <Modal 
-      v-if="modalOpen" 
-      @close-modal="toggleModal" 
-      :APIkey="APIkey" 
-      :cities="cities"
-    ></Modal>
-    <Navigation 
-      @add-city="toggleModal" 
-      @edit-city="toggleEdit" 
-      :addCityActive="addCityActive" 
-      :isDay="isDay" 
-      :isNight="isNight"
-    ></Navigation>
-    <router-view 
-      :cities="cities" 
-      :edit="edit" 
-      :APIkey="APIkey" 
-      @is-day="dayTime" 
-      @is-night="nightTime"
-      @resetDays="resetDays"
-    />
+    <div v-if="isLoading" class="loading">
+      <span></span>
+    </div>
+    <div v-else class="app">
+      <Modal 
+        v-if="modalOpen" 
+        @close-modal="toggleModal" 
+        :APIkey="APIkey" 
+        :cities="cities"
+      ></Modal>
+      <Navigation 
+        @add-city="toggleModal" 
+        @edit-city="toggleEdit" 
+        :addCityActive="addCityActive" 
+        :isDay="isDay" 
+        :isNight="isNight"
+      ></Navigation>
+      <router-view 
+        :isDay="isDay" 
+        :isNight="isNight"
+        :cities="cities" 
+        :edit="edit" 
+        :APIkey="APIkey" 
+        @is-day="dayTime" 
+        @is-night="nightTime"
+        @resetDays="resetDays"
+        @add-city="toggleModal"
+      />
+    </div>
   </div>
 </template>
 
@@ -45,6 +53,7 @@ export default {
       modalOpen: null,
       edit: null,
       addCityActive: null,
+      isLoading: true,
     }
   },
   created() {
@@ -56,6 +65,9 @@ export default {
       const citiesCol = collection(db, 'cities');
       
         onSnapshot(citiesCol, (snapshot) => {
+          if (snapshot.docs.length === 0) {
+            this.isLoading = false;
+          }
           snapshot.docChanges().forEach(async (change) => {
             if (change.type === "added" && !change.doc.Nd) {
              try {
@@ -65,6 +77,7 @@ export default {
                     currentWeather: response.data
                 })
                 this.cities.push(change.doc.data());
+                this.isLoading = false;
               } catch (err) {
                 console.log(err);
               }
@@ -126,12 +139,18 @@ export default {
   background-color: rgb(20, 42, 95);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-
+body {
+  background-color: #31363d;
+}
 .main {
+  min-height: 100%;
+  height: 100vh;
+  justify-content: center;
+
+}
+.app {
   max-width: 1024px;
   margin: 0 auto;
-  height: 100vh;
-
 }
 .container {
   padding: 0 20px;
@@ -153,7 +172,7 @@ export default {
     height: 60px;
     margin: 0 auto;
     border: 2px solid transparent;
-    border-top-color: #142a5f;
+    border-top-color: #c2c2c2;
     border-radius: 50%;
     animation: spin ease 1000ms infinite;
   }

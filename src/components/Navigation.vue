@@ -2,7 +2,7 @@
   <div>
     <header v-if="addCityActive" class="container add-city">
       <nav>
-        <span>Add City</span>
+        <span>Weather App</span>
         <div class="right">
           <i @click="editCities" ref="editCities" class="far fa-edit"></i>
           <i @click="reloadApp" class="fas fa-sync"></i>
@@ -74,6 +74,7 @@ header {
   .right {
     i {
       font-size: 20px;
+      cursor: pointer;
     }
 
     i:nth-child(2),

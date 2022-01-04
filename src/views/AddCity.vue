@@ -2,7 +2,7 @@
   <div>
     <div v-if="cities.length === 0" class="no-cities">
       <p>No cities added, add a new one?</p>
-      <button>Add City</button>
+      <button @click="addCity">Add City</button>
     </div>
     <div class="grid">
       <div class="city-link" v-for="(city, index) in cities" :key="index">
@@ -20,6 +20,11 @@ export default {
   props: ['cities', 'edit'],
   components: {
     City
+  },
+  methods: {
+    addCity() {
+      this.$emit("add-city");
+    },
   }
 }
 </script>
@@ -58,7 +63,6 @@ button {
 .grid {
   display: grid;
   padding-top: 81px;
-  background-color: #31363d;
   width: 100%;
   min-height: 100vh;
   grid-auto-rows: 250px;

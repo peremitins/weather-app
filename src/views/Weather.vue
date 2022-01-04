@@ -15,13 +15,20 @@
 </template>
 
 <script>
+import CurrentWeather from "../components/CurrentWeather.vue";
+import HourlyWeather from "../components/HourlyWeather.vue";
+import WeeklyForecast from "../components/WeeklyForecast.vue";
+import AdditionalInfo from "../components/AdditionalInfo.vue";
 import axios from "axios";
 import db from '../firebase/firebaseInit';
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 export default {
   name: 'Weather',
-  props: ['APIkey'],
+  props: ['APIkey', 'isDay', 'isNight'],
+  components: {
+    CurrentWeather, HourlyWeather, WeeklyForecast, AdditionalInfo
+  },
   data() {
     return {
       forecast: null,
@@ -66,9 +73,7 @@ export default {
 <style lang="scss">
 .weather {
   transition: 500ms ease;
-  overflow: scroll;
   width: 100%;
-  height: 100%;
 
   .weather-wrap {
     overflow: hidden;

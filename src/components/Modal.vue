@@ -1,10 +1,10 @@
 <template>
   <div @click="closeModal" class="modal" ref="modal">
-    <div class="modal__wrap" ref="modalWrap">
+    <form @submit.prevent="addCity" class="modal__wrap" ref="modalWrap">
       <label for="modal__city-name">Enter Location:</label>
-      <input type="text" name="city-name" placeholder="Search By City Name" v-model="city" />
-      <button @click="addCity">Add</button>
-    </div>
+      <input ref="email" type="text" name="city-name" placeholder="Search By City Name" v-model="city" />
+      <button>Add</button>
+    </form>
   </div>
 </template>
 
@@ -21,11 +21,17 @@ export default {
       city: "",
     };
   },
+  mounted() {
+    this.focusInput();
+  },
   methods: {
     closeModal(e) {
       if (e.target === this.$refs.modal) {
         this.$emit("close-modal");
       }
+    },
+    focusInput() {
+      this.$refs.email.focus();
     },
     async addCity() {
       if (this.city === "") {
@@ -33,13 +39,17 @@ export default {
       } else if (this.cities.some((res) => res.city === this.city.toLowerCase())) {
         alert(`${this.city} already exists!`);
       } else {
-        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=${this.APIkey}`);
-
-        await addDoc(collection(db, "cities"), {
-          city: this.city,
-          currentWeather: response.data
-        });
-        this.$emit("close-modal");
+        try {
+          const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=${this.APIkey}`);
+  
+          await addDoc(collection(db, "cities"), {
+            city: this.city,
+            currentWeather: response.data
+          });
+          this.$emit("close-modal");
+        } catch {
+          alert(`${this.city} does not exist, please try again!`);
+        }
       }
     },
   },
@@ -53,6 +63,8 @@ export default {
   position: fixed;
   width: 100%;
   height: 100%;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
