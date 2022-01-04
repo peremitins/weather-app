@@ -33,7 +33,7 @@ export default {
       } else if (this.cities.some((res) => res.city === this.city.toLowerCase())) {
         alert(`${this.city} already exists!`);
       } else {
-        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${this.APIkey}`);
+        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=${this.APIkey}`);
 
         await addDoc(collection(db, "cities"), {
           city: this.city,

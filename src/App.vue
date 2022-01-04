@@ -1,8 +1,26 @@
 <template>
   <div id="app" class="main">
-    <Modal v-if="modalOpen" @close-modal="toggleModal" :APIkey="APIkey" :cities="cities"></Modal>
-    <Navigation @add-city="toggleModal" @edit-city="toggleEdit"></Navigation>
-    <router-view :cities="cities" :edit="edit"/>
+    <Modal 
+      v-if="modalOpen" 
+      @close-modal="toggleModal" 
+      :APIkey="APIkey" 
+      :cities="cities"
+    ></Modal>
+    <Navigation 
+      @add-city="toggleModal" 
+      @edit-city="toggleEdit" 
+      :addCityActive="addCityActive" 
+      :isDay="isDay" 
+      :isNight="isNight"
+    ></Navigation>
+    <router-view 
+      :cities="cities" 
+      :edit="edit" 
+      :APIkey="APIkey" 
+      @is-day="dayTime" 
+      @is-night="nightTime"
+      @resetDays="resetDays"
+    />
   </div>
 </template>
 
@@ -19,15 +37,19 @@ export default {
   name: 'App',
   data() {
     return {
+      isDay: null,
+      isNight: null,
       APIkey: '152307cfee4000c6853a3faf8d9bc911',
       city: 'Detroit',
       cities: [],
       modalOpen: null,
       edit: null,
+      addCityActive: null,
     }
   },
   created() {
     this.getCityWeather();
+    this.checkRoute();
   },
   methods: {
     async getCityWeather() {
@@ -37,7 +59,7 @@ export default {
           snapshot.docChanges().forEach(async (change) => {
             if (change.type === "added" && !change.doc.Nd) {
              try {
-                const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${change.doc.data().city}&appid=${this.APIkey}`);
+                const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${change.doc.data().city}&units=metric&appid=${this.APIkey}`);
                 const getCityById = doc(db, "cities", change.doc.id);
                 await updateDoc(getCityById, {
                     currentWeather: response.data
@@ -59,6 +81,28 @@ export default {
     },
     toggleEdit() {
       this.edit = !this.edit;
+    },
+    checkRoute() {
+      if (this.$route.name === 'AddCity') {
+        this.addCityActive = true;
+      } else {
+        this.addCityActive =false;
+      }
+    },
+    dayTime() {
+      this.isDay = !this.isDay;
+    },
+    nightTime() {
+      this.isNight = !this.isNight;
+    },
+    resetDays() {
+      this.isDay = false;
+      this.isNight = false;
+    }
+  },
+  watch: {
+    $route() {
+      this.checkRoute();
     }
   }
 }
