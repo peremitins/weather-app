@@ -109,6 +109,7 @@ export default {
 
     video {
       height: 100%;
+      transform: scale(1.3);
       @media (min-width: 900px) {
         height: auto;
         width: 100%;
