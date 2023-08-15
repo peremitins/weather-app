@@ -1,11 +1,11 @@
 # Weather-app
 
-##### https://allfreelance.github.io/weather-app/
+##### https://peremitins.github.io/weather-app/
 
 > Weather application with graphical presentation and data detail.<br>
 > Used HTML, CSS/SCSS, JS, Vuejs, VueRouter, Git, Api.openweathermap.
 > 
-[![](https://github.com/allfreelance/weather-app/blob/master/screen.jpg)](https://allfreelance.github.io/weather-app/)
+[![](https://github.com/peremitins/weather-app/blob/master/screen.jpg)](https://peremitins.github.io/weather-app/)
 
 ## Project setup
 
